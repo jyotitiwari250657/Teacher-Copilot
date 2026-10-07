@@ -223,7 +223,7 @@ agent, including the parent messages, produces Devanagari output.
 
 ---
 
-## 7. How each agent behaves
+## 5. How each agent behaves
 
 ### Lesson Planner
 

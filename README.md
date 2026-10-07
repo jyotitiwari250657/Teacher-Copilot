@@ -1,5 +1,8 @@
 # TeacherCopilot
 
+> 🌐 **Live Web Application**: [https://jyotitiwari250657.github.io/Teacher-Copilot/](https://jyotitiwari250657.github.io/Teacher-Copilot/)  
+> 💻 **GitHub Repository**: [https://github.com/jyotitiwari250657/Teacher-Copilot](https://github.com/jyotitiwari250657/Teacher-Copilot)
+
 **An agentic AI teaching assistant that takes the admin off a teacher's plate.**
 Built for school teachers (SDG 4: Quality Education), Classes 6-12, English + Hindi.
 

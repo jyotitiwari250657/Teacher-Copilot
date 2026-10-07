@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react'
 // on /classes, /lessons, /grading, /parent-updates and /workflow would swallow
 // those SPA routes and break deep links.)
 export default defineConfig({
+  base: './',
   plugins: [react()],
   server: {
     host: '127.0.0.1',

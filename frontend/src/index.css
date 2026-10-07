@@ -146,7 +146,7 @@
   .app-backdrop-image {
     position: absolute;
     inset: -8%;
-    background-image: url('/app-bg.jpg');
+    background-image: url('./assets/app-bg.jpg');
     background-size: cover;
     background-position: center;
     filter: blur(34px) saturate(0) brightness(1.15);

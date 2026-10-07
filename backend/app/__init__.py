@@ -1,0 +1,1 @@
+"""TeacherCopilot backend package."""

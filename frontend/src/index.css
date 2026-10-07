@@ -1,0 +1,374 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-ink-50 text-ink-800 antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04';
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.ink.300') transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    @apply bg-ink-300 rounded-full;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  /* Keep focus rings visible on dark surfaces. */
+  :focus-visible {
+    outline: 2px solid theme('colors.brand.400');
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Surfaces are dark glass panels rather than white cards. They sit on a
+     photographic backdrop that varies from #000000 to #323232, so they carry a
+     little more opacity and a brighter hairline to stay clearly separable. */
+  .card {
+    @apply bg-ink-100/85 rounded-xl border border-ink-200/90 shadow-card backdrop-blur-md;
+  }
+  .card-pad {
+    @apply p-5 sm:p-6;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5
+           text-sm font-semibold transition-all duration-150
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400
+           disabled:opacity-50 disabled:cursor-not-allowed
+           whitespace-nowrap;
+  }
+
+  /* Variant colours. Each sets its own --glow for the shared glow rules below. */
+  .btn-primary {
+    --glow: 194, 203, 214;
+    /* The button is polished steel, so the label is near-black. `text-ink-900`
+       would be white in this inverted ramp and fail against silver. */
+    @apply btn bg-brand-400 text-ink-50 font-bold hover:bg-brand-300
+           active:bg-brand-500 disabled:hover:bg-brand-400;
+  }
+  .btn-secondary {
+    --glow: 194, 203, 214;
+    @apply btn bg-ink-200/80 text-ink-800 border border-ink-300
+           hover:bg-ink-200 hover:border-ink-400 active:bg-ink-300;
+  }
+  .btn-ghost {
+    --glow: 194, 203, 214;
+    @apply btn text-ink-500 hover:bg-ink-200/70 hover:text-ink-800
+           active:bg-ink-300/70;
+  }
+  .btn-danger {
+    --glow: 194, 112, 112;
+    /* A deep oxide red, so the white label keeps AA contrast. */
+    @apply btn bg-[#8f4141] text-white hover:bg-[#a35353] active:bg-[#7a3636];
+  }
+
+  /* The glowing action button, adapted from the Uiverse "shadow__btn" template.
+
+     Deliberately plain selectors placed *after* the variants above. `@apply btn`
+     copies .btn's `transition-all` into each variant rule, so these rules must
+     come later to win at equal specificity - and they must not use compound
+     `.btn.<variant>` selectors, which Tailwind rejects as an @apply cycle.
+     Each variant's own --glow is what colours the glow. */
+  .glow-btn {
+    --glow: 194, 203, 214;
+  }
+  .glow-btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-danger {
+    box-shadow: 0 0 25px rgba(var(--glow), 0.42);
+    transition:
+      box-shadow 0.45s ease,
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease;
+  }
+  .glow-btn:hover:not(:disabled):not(:focus-visible),
+  .btn-primary:hover:not(:disabled):not(:focus-visible),
+  .btn-secondary:hover:not(:disabled):not(:focus-visible),
+  .btn-ghost:hover:not(:disabled):not(:focus-visible),
+  .btn-danger:hover:not(:disabled):not(:focus-visible) {
+    box-shadow:
+      0 0 5px rgba(var(--glow), 0.6),
+      0 0 25px rgba(var(--glow), 0.5),
+      0 0 50px rgba(var(--glow), 0.34),
+      0 0 100px rgba(var(--glow), 0.2);
+    transform: translateY(-1px);
+  }
+  .glow-btn:active:not(:disabled),
+  .btn-primary:active:not(:disabled),
+  .btn-secondary:active:not(:disabled),
+  .btn-ghost:active:not(:disabled),
+  .btn-danger:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 0 18px rgba(var(--glow), 0.45);
+  }
+  .glow-btn:disabled,
+  .btn-primary:disabled,
+  .btn-secondary:disabled,
+  .btn-ghost:disabled,
+  .btn-danger:disabled {
+    box-shadow: none;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs rounded-md;
+  }
+
+  /* --- The app backdrop -------------------------------------------------
+     A near-black, fully desaturated photograph behind every authenticated page.
+     The source is 626x358, so it is blurred and scaled past the viewport: it
+     reads as a soft ambient wash instead of a visibly upscaled photograph. A
+     scrim holds the surface near-black so the steel palette keeps its contrast,
+     and a faint cool sheen keeps the silver alive. */
+  .app-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background: #060709;
+  }
+  .app-backdrop-image {
+    position: absolute;
+    inset: -8%;
+    background-image: url('/app-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(34px) saturate(0) brightness(1.15);
+    transform: scale(1.12);
+  }
+  .app-backdrop-scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgba(6, 7, 9, 0.55), rgba(4, 5, 7, 0.86)),
+      linear-gradient(to bottom, rgba(6, 7, 9, 0.55) 0%, rgba(4, 5, 7, 0.88) 100%);
+  }
+  /* Cold steel light raking across black, drifting very slowly. */
+  .app-backdrop-sheen {
+    position: absolute;
+    inset: -20%;
+    background:
+      radial-gradient(38rem 30rem at 18% 6%, rgba(194, 203, 214, 0.05), transparent 62%),
+      radial-gradient(32rem 26rem at 84% 2%, rgba(150, 165, 182, 0.06), transparent 60%),
+      radial-gradient(46rem 34rem at 50% 106%, rgba(217, 224, 232, 0.03), transparent 64%);
+    animation: void-breathe 22s ease-in-out infinite;
+  }
+
+  /* The animated void backdrop (Uiverse "void-pulse" by chase2k25), kept for
+     reference - superseded by .app-backdrop above. */
+  .void-pulse {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: linear-gradient(
+      to bottom,
+      rgba(18, 20, 24, 0.35) 0%,
+      rgb(11, 13, 16) 0%,
+      rgb(3, 4, 5) 100%
+    );
+    filter: url(#void-texture);
+  }
+  .void-texture-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  /* Cold steel light raking across black, drifting very slowly. */
+  .void-pulse .orbit-overlay {
+    position: absolute;
+    inset: -20%;
+    background:
+      radial-gradient(38rem 30rem at 18% 8%, rgba(194, 203, 214, 0.1), transparent 62%),
+      radial-gradient(32rem 26rem at 82% 4%, rgba(120, 134, 152, 0.11), transparent 60%),
+      radial-gradient(46rem 34rem at 50% 108%, rgba(217, 224, 232, 0.05), transparent 64%);
+    animation: void-breathe 18s ease-in-out infinite;
+  }
+  @keyframes void-breathe {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.9;
+    }
+    50% {
+      transform: translate3d(0, -1.5%, 0) scale(1.06);
+      opacity: 1;
+    }
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-ink-300 bg-ink-100/60 px-3.5 py-2.5 text-sm text-ink-800
+           placeholder:text-ink-400 transition
+           focus:border-brand-400 focus:ring-2 focus:ring-brand-500/20 focus:outline-none
+           disabled:bg-ink-200/60 disabled:text-ink-400;
+  }
+  .label {
+    @apply block text-xs font-semibold uppercase tracking-wide text-ink-400 mb-1.5;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1
+           text-xs font-semibold border;
+  }
+  .skeleton {
+    @apply relative overflow-hidden rounded-md bg-ink-200/80;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full animate-shimmer
+           bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  }
+  .prose-doc {
+    @apply text-sm leading-relaxed text-ink-700;
+  }
+  .prose-doc p {
+    @apply mb-3;
+  }
+  /* Hindi text needs a little more line height to breathe. */
+  .devanagari {
+    line-height: 1.85;
+    font-family: 'Nirmala UI', 'Segoe UI', system-ui, sans-serif;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Login screen - every rule is scoped to the .tc-* prefix so it cannot leak
+   into the rest of the app.
+   --------------------------------------------------------------------------- */
+@layer components {
+  /* 100vh fallback, with 100dvh where the browser knows about dynamic bars. */
+  .tc-login {
+    height: 100vh;
+  }
+  @supports (height: 100dvh) {
+    .tc-login {
+      height: 100dvh;
+    }
+  }
+
+  /* One calm entrance for the whole composition - not per field, not looping. */
+  .tc-reveal {
+    animation: tc-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes tc-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .tc-label {
+    @apply block text-[13px] font-bold tracking-[0.01em] text-white;
+    margin-bottom: 0.55rem;
+  }
+  .tc-field {
+    @apply w-full border-0 bg-transparent pb-2.5 pt-1 text-[16px] text-white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.26);
+    outline: none;
+    transition: border-color 0.22s ease, box-shadow 0.22s ease;
+  }
+  .tc-field::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+  .tc-field:hover {
+    border-bottom-color: rgba(255, 255, 255, 0.45);
+  }
+  .tc-field:focus {
+    border-bottom-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+  .tc-field:disabled {
+    opacity: 0.6;
+  }
+  .tc-field:focus-visible {
+    outline: none;
+  }
+
+  /* Native checkbox, tinted to sit on the glass. */
+  .tc-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: #ffffff;
+    cursor: pointer;
+  }
+
+  .tc-cta {
+    height: 62px;
+    /* The same glow idea as .glow-btn, in white so it suits the black button. */
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.16);
+    transition:
+      box-shadow 0.45s ease,
+      background-color 0.2s ease,
+      transform 0.2s ease;
+  }
+  .tc-cta:hover:not(:disabled) {
+    box-shadow:
+      0 0 6px rgba(255, 255, 255, 0.25),
+      0 0 26px rgba(255, 255, 255, 0.2),
+      0 0 60px rgba(255, 255, 255, 0.14),
+      0 0 110px rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* Short viewports: tighten the composition without ever scrolling it. */
+@media (max-height: 860px) {
+  .tc-title {
+    font-size: 2.15rem !important;
+  }
+  .tc-cta {
+    height: 56px;
+  }
+}
+@media (max-height: 740px) {
+  .tc-title {
+    font-size: 1.85rem !important;
+  }
+  .tc-heading p,
+  .tc-heading h1 {
+    margin-top: 0.5rem;
+  }
+  .tc-cta {
+    height: 52px;
+  }
+}
+
+/* Respect the user's motion preference: no reveal, no movement, no drifting sky. */
+@media (prefers-reduced-motion: reduce) {
+  .tc-reveal {
+    animation: none;
+  }
+  .tc-cta,
+  .tc-field,
+  .glow-btn {
+    transition: none;
+  }
+  .tc-cta:hover {
+    transform: none;
+  }
+  .glow-btn:hover:not(:disabled),
+  .btn:hover:not(:disabled),
+  .void-pulse .orbit-overlay {
+    animation: none;
+    transform: none;
+  }
+}

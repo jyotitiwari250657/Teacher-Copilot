@@ -1,0 +1,30 @@
+# --- secrets: never commit the API key ---
+.env
+backend/.env
+*.env.local
+
+# --- python ---
+backend/.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# --- database (regenerated + reseeded on first run) ---
+backend/*.db
+backend/*.sqlite
+backend/*.sqlite3
+
+# --- node / frontend ---
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/_shot_*.png
+npm-debug.log*
+yarn-error.log*
+
+# --- editors & OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -187,27 +187,7 @@ The build is a folder of static files - host it anywhere.
 
 ---
 
-## 4. Why there is no backend
-
-The original build had a FastAPI service. Moving it into the browser was worth it for a
-classroom tool:
-
-- **Nothing to install.** A teacher, or a demo audience, runs one command.
-- **No student data leaves the device.** There is no server to leak, no database to secure,
-  and no key to misconfigure.
-- **It works on a plane.** No network call is made, so the demo cannot fail because of a
-  hotel wifi or a rate limit.
-- **It still runs the real rules.** The grading thresholds, the word caps and the approval
-  gate are genuine logic, not fixtures.
-
-The agents are deterministic rule engines today, which keeps behaviour identical on every
-machine. `src/data/agents.js` is the seam: each function is a pure function of its input,
-so swapping the body for a call to a hosted model is a local change that leaves the rules,
-the privacy boundary and the approval gate intact.
-
----
-
-## 5. The 3-minute demo
+## 4. The 3-minute demo
 
 The app opens seeded with **Class 8-B (Science), 12 students, a 10-question Photosynthesis
 paper and 12 filled-in answer scripts.** You can do the whole demo without typing anything.
@@ -243,7 +223,7 @@ agent, including the parent messages, produces Devanagari output.
 
 ---
 
-## 6. How each agent behaves
+## 7. How each agent behaves
 
 ### Lesson Planner
 
@@ -290,7 +270,7 @@ agent, including the parent messages, produces Devanagari output.
 
 ---
 
-## 7. Safety and privacy
+## 6. Safety and privacy
 
 | Guarantee | How it is enforced |
 |---|---|
@@ -304,7 +284,7 @@ agent, including the parent messages, produces Devanagari output.
 
 ---
 
-## 8. The in-browser API
+## 7. The in-browser API
 
 `src/api/local.js` exposes one object, `api`, with the same method names a REST client
 would have. These are the methods the pages use:
@@ -329,7 +309,7 @@ embedding, and Devanagari survives both paths.
 
 ---
 
-## 9. Project layout
+## 8. Project layout
 
 ```
 teachercopilot/
@@ -370,7 +350,7 @@ teachercopilot/
 
 ---
 
-## 10. Tests
+## 9. Tests
 
 Two suites, neither of which needs a server.
 
@@ -428,7 +408,7 @@ The frontend production build is verified separately with `npm run build`.
 
 ---
 
-## 11. Limitations
+## 10. Limitations
 
 Known and deliberate for an MVP:
 
@@ -451,7 +431,7 @@ Known and deliberate for an MVP:
 
 ---
 
-## 12. Future scope
+## 11. Future scope
 
 - **Attach a real model.** `src/data/agents.js` is the seam: keep the rules, the privacy
   boundary and the approval gate, and swap the generation body for a hosted call.
